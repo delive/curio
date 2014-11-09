@@ -1,0 +1,139 @@
+Sqlite:
+
+Table Users (only contains your friends)
+Columns:
+id bigint (== Users id)
+firstname text
+lastname text
+
+Table Questions
+Columns:
+id bigint (== Questions id)
+user bigint
+target //TODO probably need to support both questions i asked + questions i'm the target of. same issue as sql target)
+type smallint (refers to QuestionTypes id)
+dateStart date
+dateComplete date
+status smallint (refer to QuestionStatus id)
+
+Table QuestionStatus
+Columns:
+id smallint (== QuestionStatus id)
+name text (ie completed, in progress, cancelled)
+
+Table QuestionTypes
+Columns:
+id smallint (== QuestionTypes id)
+name
+
+Table OptionMCT
+Columns:
+id bigint (== OptionMCT id)
+question bigint (refer to Questions id)
+option text
+
+Table OptionMCP
+Columns:
+id bigint (== OptionsMCP id)
+question bigint (refer to Questions id)
+option text
+picture text (just the filename?)
+
+Answer
+id bigint (== Answer id)
+question (refer to Questions id)
+user (refer to Users id)
+answer bigint (refers to id of OptionXYZ table or 0,1 for no,yes)
+date date
+
+CustomAnswer
+id bigint (== CustomAnswer id)
+question( refer to Questions id)
+user (refer to Users id)
+answer text
+date date
+
+
+
+
+
+Mysql:
+
+Table Users
+Columns:
+id (bigint primary, auto incr)
+firstname text
+lastname text
+type smallint (refer to UserSourceType id)
+
+Table Friends
+Columns:
+user bigint (refer to Users id)
+friend bigint (refer to Users id)
+
+Table UserSourceType
+Columns:
+id (smallint primary, auto incr)
+name text (ie, facebook, local)
+
+Table QuestionTypes
+Columns:
+id (smallint primary, auto incr)
+name
+
+Table Questions
+Columns:
+id (bigint primary, auto incr)
+user bigint
+target (//TODO ??? need to figure this out. seems like it has to be a - separated list of userids) how to find questions for you? fast?
+type smallint (refers to QuestionTypes id)
+dateStart date
+dateComplete date
+status smallint (refers to QuestionStatus id)
+
+Table QuestionStatus
+Columns:
+id (smallint primary, auto incr)
+name text (ie completed, in progress, cancelled)
+
+Table OptionMCT
+Columns:
+id (bigint primary, auto incr)
+question bigint (refer to Questions id)
+option text
+
+Table OptionMCP
+Columns:
+id (bigint primary, auto incr)
+question bigint (refer to Questions id)
+option text
+picture text (just the filename?)
+
+Answer
+id (bigint primary, auto incr)
+question (refer to Questions id)
+user (refer to Users id)
+answer bigint (refers to id of OptionXYZ table or 0,1 for no,yes)
+date date
+
+CustomAnswer
+id (bigint primary, auto incr)
+question( refer to Questions id)
+user (refer to Users id)
+answer text
+date date
+
+
+//TODO data index
+figure out indexes - probably can make the indexes after we figure out typical queries
+seems like we'll have lots of joins between Answer.answer and OptionXYZ.option
+
+//TODO data flow
+lets have all data in mysql somewhere. then, on sqlite store only content this user can see?
+so, on load, load all data querying from local sqlite and display
+then show the 'refreshing' symbol, and have data pumped into sqlite, then redraw the page with new content
+
+//TODO local cache data
+should only have a subset of all the data in mysql. users imported should only be for 'friends'
+questions pulled in should only be questions targeted to you or created by you
+answers pulled in should only be for the questions pulled in (do we pull in all answers right away? maybe not..)
