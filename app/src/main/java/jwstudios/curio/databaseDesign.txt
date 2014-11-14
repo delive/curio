@@ -1,15 +1,18 @@
-Sqlite:
+Sqlite: ALL TABLES (except enum type) will have sid. sid is 0 if unset. on create of a new item
+build the full sqlite table structure with id's pointing to the sqlite ids. then, in BG thread, insert (with a ref
+to that sqlite question id), and recursively update sid's for each obj
 
 Table Users (only contains your friends)
 Columns:
-id bigint (== Users id)
+id bigint (== Users id)  PRIMARY
 firstname text
 lastname text
 
 Table Questions
 Columns:
-id bigint (== Questions id)
-user bigint
+qid bigint (== Questions id)
+id bigint
+question text
 target //TODO probably need to support both questions i asked + questions i'm the target of. same issue as sql target)
 type smallint (refers to QuestionTypes id)
 dateStart date
@@ -39,14 +42,16 @@ question bigint (refer to Questions id)
 option text
 picture text (just the filename?)
 
-Answer
+Table Answer
+Columns:
 id bigint (== Answer id)
 question (refer to Questions id)
 user (refer to Users id)
 answer bigint (refers to id of OptionXYZ table or 0,1 for no,yes)
 date date
 
-CustomAnswer
+Table CustomAnswer
+Columns:
 id bigint (== CustomAnswer id)
 question( refer to Questions id)
 user (refer to Users id)
@@ -85,6 +90,7 @@ Table Questions
 Columns:
 id (bigint primary, auto incr)
 user bigint
+question text
 target (//TODO ??? need to figure this out. seems like it has to be a - separated list of userids) how to find questions for you? fast?
 type smallint (refers to QuestionTypes id)
 dateStart date
